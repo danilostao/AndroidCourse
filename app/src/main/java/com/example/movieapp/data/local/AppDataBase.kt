@@ -1,0 +1,32 @@
+package com.example.movieapp.data.local
+
+import android.content.Context
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.example.movieapp.data.model.MovieEntity
+
+@Database(entities =[MovieEntity::class], version = 1)
+abstract class AppDatabase: RoomDatabase() {
+
+    abstract fun movieDao(): MovieDao
+
+    companion object{
+        //necesitamos que sea un singleton para que no tengamos mas de una instancia
+        private var INSTANCE: AppDatabase? = null
+
+        fun getDatabase(context: Context): AppDatabase {
+            INSTANCE = INSTANCE ?: Room.databaseBuilder( //si es null el elvis operator nos la va a crear la instancia
+                context.applicationContext,
+                AppDatabase::class.java,
+                "movie_table"
+            ).build()
+
+            return INSTANCE!!
+
+            fun destroyInstance(){
+                INSTANCE = null
+            }
+        }
+    }
+}
